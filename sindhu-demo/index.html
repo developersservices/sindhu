@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sindhu Code Demo</title>
+</head>
+<body>
+  <h1>Sindhu.hu Web Demo</h1>
+
+  <!-- This is where dom.print will display text -->
+  <div id="output"></div>
+
+  <!-- Load the generated JavaScript from Emscripten -->
+  <script src="sindhuhu.js"></script>
+  <script>
+    // Suppose we have a function 'run_program' exposed by Emscripten
+    // that takes a string of sindhu.hu code and executes it.
+    const code = `
+      let message = "Hello, Sindhu.hu!";
+
+      func greet(name: String) -> String {
+          return "Hello, " + name + "!";
+      }
+
+      let greeting = greet("Developer");
+      dom.print(greeting);
+    `;
+
+    // Run the code when the page loads
+    window.onload = function() {
+      if (Module && Module.ccall) {
+        // Adjust function name/return type as needed
+        Module.ccall('run_program', 'number', ['string'], [code]);
+      }
+    };
+  </script>
+</body>
+</html>
