@@ -33,13 +33,6 @@ ExprPtr Parser::parsePrimary() {
 }
 
 ExprPtr Parser::parseExpression() {
-    // For simplicity, we handle binary expressions with '+' and '-' only.
-    ExprPtr left = parsePrimary();
-
-    while (peek().type == TokenType::Plus || peek().type == TokenType::Minus) {
-        Token op = get();
-        ExprPtr right = parsePrimary();
-        left = std::make_unique<BinaryExpr>(std::move(left), op, std::move(right));
-    }
-    return left;
+    // For simplicity, we only parse a primary expression.
+    return parsePrimary();
 }

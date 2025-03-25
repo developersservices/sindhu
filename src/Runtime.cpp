@@ -1,8 +1,11 @@
-// In Runtime.cpp
 #include "Runtime.h"
+#ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
+#endif
 
-void console_print(const std::string &message) {
-    // Call JavaScript's console.log via EM_JS
-    EM_ASM_({ console.log(UTF8ToString($0)); }, message.c_str());
+void runtime_init() {
+    // Perform any runtime initialization here.
+#ifdef __EMSCRIPTEN__
+    // Emscripten-specific initialization if needed.
+#endif
 }

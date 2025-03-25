@@ -2,14 +2,12 @@
 #define INTERPRETER_H
 
 #include "AST.h"
-#include <unordered_map>
 #include <string>
 
 class Interpreter {
 public:
     int evaluate(Expr* expr);
-private:
-    std::unordered_map<std::string, int> environment;
+    std::string evaluateAsString(Expr* expr); // Helper function
 };
 
 #endif // INTERPRETER_H

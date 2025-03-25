@@ -14,7 +14,6 @@ private:
     char peek() const;
     char get();
     void skipWhitespace();
-
     std::string source;
     size_t current;
 };

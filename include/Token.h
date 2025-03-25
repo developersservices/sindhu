@@ -19,9 +19,7 @@ enum class TokenType {
 struct Token {
     TokenType type;
     std::string text;
-
-    Token(TokenType type, const std::string &text)
-        : type(type), text(text) {}
+    Token(TokenType type, const std::string &text) : type(type), text(text) {}
 };
 
 #endif // TOKEN_H

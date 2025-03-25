@@ -13,7 +13,6 @@ public:
 private:
     const std::vector<Token>& tokens;
     size_t current;
-
     const Token& peek() const;
     const Token& get();
     bool match(TokenType type);

@@ -1,32 +1,49 @@
 #include "Lexer.h"
 #include "Parser.h"
 #include "Interpreter.h"
+#include "Runtime.h"
+#include "DOM.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
-#include <emscripten/emscripten.h>
 
-extern "C" {
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
-    // Expose this function to JavaScript so that we can pass source code from an HTML page.
-    EMSCRIPTEN_KEEPALIVE
-    int run_program(const char* source) {
-        std::string src(source);
-        Lexer lexer(src);
-        auto tokens = lexer.tokenize();
-        Parser parser(tokens);
-        auto expr = parser.parseExpression();
-        Interpreter interpreter;
-        int result = interpreter.evaluate(expr.get());
-        return result;
+int main(int argc, char* argv[]) {
+    std::string source;
+    if (argc > 1) {
+        std::ifstream file(argv[1]);
+        if (!file) {
+            std::cerr << "Error: Could not open file " << argv[1] << "\n";
+            return 1;
+        }
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        source = buffer.str();
+    } else {
+        // Default source code if no file is provided.
+        source = "42"; // This simply prints the number 42.
     }
-}
 
-#ifdef EMSCRIPTEN
-// When compiling for WebAssembly, do not run main() automatically.
+    runtime_init();
+
+    Lexer lexer(source);
+    auto tokens = lexer.tokenize();
+    Parser parser(tokens);
+    auto expr = parser.parseExpression();
+    Interpreter interpreter;
+    int result = interpreter.evaluate(expr.get());
+    
+#ifdef __EMSCRIPTEN__
+    // For WebAssembly builds, output via dom_print.
+    dom_print("Result: " + std::to_string(result));
 #else
-int main() {
-    std::string source = "3 + 4 - 2";
-    std::cout << "Result: " << run_program(source.c_str()) << std::endl;
+    // For native builds, output to console.
+    std::cout << "Result: " << result << std::endl;
+#endif
+
     return 0;
 }
-#endif
